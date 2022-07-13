@@ -1,0 +1,8 @@
+[run]
+    source = .
+    omit =
+        apps/user/managers.py
+        apps/user/migrations/*
+[report]
+    show_missing = True
+    fail_under = 100

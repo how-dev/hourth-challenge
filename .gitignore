@@ -1,0 +1,6 @@
+venv
+.env
+.pytest_cache
+.coverage
+.idea
+media
