@@ -4,7 +4,7 @@ create_db_volume:
 
 run:
 	@echo "--> \033[0;32mUping\033[0m"
-	docker-compose up
+	@bash -c "source venv/bin/activate && python manage.py runserver"
 
 down:
 	docker-compose down
@@ -19,11 +19,11 @@ cache-build:
 
 migrations:
 	@echo "--> \033[0;32mMaking migrations...\033[0m"
-	docker-compose run web bash -c "python manage.py makemigrations"
+	@bash -c "source venv/bin/activate && python manage.py makemigrations"
 
 migrate:
 	@echo "--> \033[0;32mMigrating...\033[0m"
-	docker-compose run web bash -c "python manage.py migrate"
+	@bash -c "source venv/bin/activate && python manage.py migrate"
 
 bash:
 	@echo "--> \033[0;32mLogging into the Docker machine via bash\033[0m"
@@ -35,7 +35,7 @@ sh:
 
 test:
 	@echo "--> \033[0;32mUping the services to run tests\033[0m"
-	docker-compose run web bash -c "pytest $(path) -s -v --disable-warnings --cov-report term-missing"
+	@bash -c "source venv/bin/activate && pytest $(path) -s -v --disable-warnings --cov-report term-missing"
 
 startapp:
 	@echo "--> \033[0;32mCreating app\033[0m"
@@ -49,27 +49,27 @@ startapp:
 	"
 
 setup:
-	@echo "--> Creating a local database volume"
-	docker volume create --name=db_local
+	@echo "--> \033[0;32mCreating Virtual Environment...\033[0m"
+	@bash -c "python -m venv venv"
 
 	@echo "--> \033[0;32mBuilding\033[0m"
-	docker-compose build --no-cache
+	@bash -c "source venv/bin/activate && pip install -r requirements.txt"
 
 	@echo "--> \033[0;32mMaking migrations...\033[0m"
-	docker-compose run web bash -c "python manage.py makemigrations"
+	@bash -c "source venv/bin/activate && python manage.py makemigrations"
 
 	@echo "--> \033[0;32mMigrating...\033[0m"
-	docker-compose run web bash -c "python manage.py migrate"
+	@bash -c "source venv/bin/activate && python manage.py migrate"
 
 	@echo "--> \033[0;32mSetuping application\033[0m"
 	@echo "--> \033[0;32mCreating Hourth Super User\033[0m"
-	docker-compose run web bash -c "python manage.py create_superuser"
+	@bash -c "source venv/bin/activate && python manage.py create_superuser"
 
 	@echo "--> \033[0;32mCreating 100 random Products with random Categories\033[0m"
-	docker-compose run web bash -c "python manage.py create_products"
+	@bash -c "source venv/bin/activate && python manage.py create_products"
 
 	@echo "--> \033[0;32mCreating 100 random Users\033[0m"
-	docker-compose run web bash -c "python manage.py create_randomusers"
+	@bash -c "source venv/bin/activate && python manage.py create_randomusers"
 
 	@echo "--> \033[0;32mUping the services to run tests\033[0m"
-	docker-compose run web bash -c "pytest -s -v --disable-warnings --cov-report term-missing"
+	@bash -c "source venv/bin/activate && pytest -s -v --disable-warnings --cov-report term-missing"
